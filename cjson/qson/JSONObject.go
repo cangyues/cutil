@@ -1,26 +1,25 @@
 package qson
 
 import (
-	json "cjson/simplejson"
-	"log"
+	"fmt"
 )
 
 type JSONObject struct {
-	data *json.Json
+	data *Json
 }
 
 func NewJSONObject() *JSONObject {
 	js := new(JSONObject)
-	js.data = json.New()
+	js.data = New()
 	return js
 }
 
 func ParseJSONObject(jsons string) *JSONObject {
 	js := new(JSONObject)
 	var err error
-	js.data, err = json.NewJson([]byte(jsons))
+	js.data, err = NewJson([]byte(jsons))
 	if err != nil {
-		log.Fatal(err)
+		return NewJSONObject()
 	}
 	return js
 }
@@ -58,7 +57,7 @@ func (jb *JSONObject) PutJSONArray(key string, value *JSONArray) *JSONObject {
 func (jb *JSONObject) GetString(key string) string {
 	v, err := jb.data.Get(key).String()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	return v
 }
@@ -66,7 +65,7 @@ func (jb *JSONObject) GetString(key string) string {
 func (jb *JSONObject) GetInt(key string) int {
 	v, err := jb.data.Get(key).Int()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	return v
 }
@@ -74,7 +73,7 @@ func (jb *JSONObject) GetInt(key string) int {
 func (jb *JSONObject) GetInt64(key string) int64 {
 	v, err := jb.data.Get(key).Int64()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	return v
 }
@@ -82,7 +81,7 @@ func (jb *JSONObject) GetInt64(key string) int64 {
 func (jb *JSONObject) GetArray(key string) []interface{} {
 	v, err := jb.data.Get(key).Array()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	return v
 }
@@ -103,7 +102,7 @@ func (jb *JSONObject) GetJSONObject(key string) *JSONObject {
 func (jb *JSONObject) ToString() string {
 	b, e := jb.data.MarshalJSON()
 	if e != nil {
-		log.Fatal(e)
+		fmt.Println(e)
 	}
 	return string(b)
 }
@@ -111,7 +110,7 @@ func (jb *JSONObject) ToString() string {
 func (jb *JSONObject) Keys() []string {
 	m, e := jb.data.Map()
 	if e != nil {
-		log.Fatal(e)
+		fmt.Println(e)
 	}
 	array := make([]string, len(m))
 	index := 0
@@ -125,7 +124,7 @@ func (jb *JSONObject) Keys() []string {
 func (jb *JSONObject) Each(exec func(key string, value interface{})) {
 	m, e := jb.data.Map()
 	if e != nil {
-		log.Fatal(e)
+		fmt.Println(e)
 	}
 	for k, v := range m {
 		exec(k, v)

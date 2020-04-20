@@ -1,9 +1,8 @@
 package qson
 
 import (
-	json "cjson/simplejson"
 	"container/list"
-	"log"
+	"fmt"
 )
 
 type JSONArray struct {
@@ -19,13 +18,13 @@ func NewJSONArray() *JSONArray {
 func ParseJSONArray(starry string) *JSONArray {
 	array := new(JSONArray)
 	array.data = list.New()
-	j, e := json.NewJson([]byte(starry))
+	j, e := NewJson([]byte(starry))
 	if e != nil {
-		log.Fatal(e)
+		fmt.Println(e)
 	}
 	a, er := j.Array()
 	if er != nil {
-		log.Fatal(er)
+		fmt.Println(er)
 	}
 	array.ArrayToJSONArray(a)
 	return array
@@ -72,11 +71,11 @@ func (js *JSONArray) ArrayToJSONArray(array []interface{}) {
 
 func (js *JSONArray) ToString() string {
 	a := js.ToArray()
-	j := json.New()
+	j := New()
 	j.Set("_ks", a)
 	s, e := j.Get("_ks").MarshalJSON()
 	if e != nil {
-		log.Fatal(e)
+		fmt.Println(e)
 	}
 	return string(s)
 }
