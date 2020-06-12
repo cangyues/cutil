@@ -69,6 +69,20 @@ func (js *JSONArray) ArrayToJSONArray(array []interface{}) {
 	}
 }
 
+func (js *JSONArray) GetRow() *JSONObject {
+	i := js.data.Front()
+	if i == nil {
+		return nil
+	}
+	v, e := i.Value.(*Json)
+	if !e {
+		return nil
+	}
+	json := new(JSONObject)
+	json.data = v
+	return json
+}
+
 func (js *JSONArray) ToString() string {
 	a := js.ToArray()
 	j := New()
