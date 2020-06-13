@@ -2,7 +2,9 @@ package qson
 
 import (
 	"container/list"
+	"encoding/json"
 	"fmt"
+	"log"
 )
 
 type JSONArray struct {
@@ -13,6 +15,15 @@ func NewJSONArray() *JSONArray {
 	array := new(JSONArray)
 	array.data = list.New()
 	return array
+}
+
+func ArrayToString(data interface{}) string {
+	bt, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err.Error())
+		return "[]"
+	}
+	return string(bt)
 }
 
 func ParseJSONArray(starry string) *JSONArray {

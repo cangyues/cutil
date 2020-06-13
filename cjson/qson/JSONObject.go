@@ -1,7 +1,10 @@
 package qson
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"strconv"
 )
 
 type JSONObject struct {
@@ -12,6 +15,15 @@ func NewJSONObject() *JSONObject {
 	js := new(JSONObject)
 	js.data = New()
 	return js
+}
+
+func ObjectToString(data interface{}) string {
+	bt, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err.Error())
+		return "{}"
+	}
+	return string(bt)
 }
 
 func ParseJSONObject(jsons string) *JSONObject {
@@ -39,6 +51,11 @@ func (jb *JSONObject) PutInt(key string, value int) *JSONObject {
 	return jb
 }
 
+func (jb *JSONObject) PutFloat(key string, value float64) *JSONObject {
+	jb.put(key, value)
+	return jb
+}
+
 func (jb *JSONObject) PutInt64(key string, value int64) *JSONObject {
 	jb.put(key, value)
 	return jb
@@ -55,19 +72,74 @@ func (jb *JSONObject) PutJSONArray(key string, value *JSONArray) *JSONObject {
 }
 
 func (jb *JSONObject) GetString(key string) string {
-	v, err := jb.data.Get(key).String()
-	if err != nil {
-		fmt.Println(err)
+	v := jb.GetInterface(key)
+	switch v.(type) {
+	case string:
+		t, _ := v.(string)
+		return t
+	case int:
+		t := v.(int)
+		return strconv.Itoa(t)
+	case float32:
+		t := v.(float32)
+		return strconv.FormatFloat(float64(t), 'E', -1, 32)
+	case float64:
+		t := v.(float64)
+		return strconv.FormatFloat(t, 'E', -1, 64)
+	default:
+		log.Println("get string error！")
+		return ""
 	}
-	return v
+}
+
+func (jb *JSONObject) GetFloat(key string) float64 {
+	v := jb.GetInterface(key)
+	switch v.(type) {
+	case string:
+		t, _ := v.(string)
+		_t, err := strconv.ParseFloat(t, 64)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return _t
+	case float64:
+		t, _ := v.(float64)
+		return t
+	case float32:
+		t, _ := v.(float32)
+		return float64(t)
+	}
+	log.Println("get string error！")
+	return 0
 }
 
 func (jb *JSONObject) GetInt(key string) int {
-	v, err := jb.data.Get(key).Int()
-	if err != nil {
-		fmt.Println(err)
+	v := jb.GetInterface(key)
+	switch v.(type) {
+	case int:
+		t, _ := v.(int)
+		return t
+	case string:
+		t, _ := v.(string)
+		_t, err := strconv.Atoi(t)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return _t
+	case float32:
+		t, _ := v.(float32)
+		return int(t)
+	case float64:
+		t, _ := v.(float32)
+		return int(t)
+	default:
+		log.Println("get int error!")
+		return 0
 	}
-	return v
+}
+
+func (jb *JSONObject) GetInterface(key string) interface{} {
+	return jb.data.Get(key).Interface()
 }
 
 func (jb *JSONObject) GetInt64(key string) int64 {
