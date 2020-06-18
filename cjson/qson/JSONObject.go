@@ -125,6 +125,13 @@ func (jb *JSONObject) GetFloat(key string) float64 {
 func (jb *JSONObject) GetInt(key string) int {
 	v := jb.GetInterface(key)
 	switch v.(type) {
+	case json.Number:
+		t, _ := v.(json.Number)
+		_t, err := strconv.Atoi(string(t))
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return _t
 	case int:
 		t, _ := v.(int)
 		return t
