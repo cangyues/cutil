@@ -80,6 +80,12 @@ func (jb *JSONObject) GetString(key string) string {
 	case int:
 		t := v.(int)
 		return strconv.Itoa(t)
+	case int32:
+		t := v.(int32)
+		return strconv.Itoa(int(t))
+	case int64:
+		t := v.(int64)
+		return strconv.Itoa(int(t))
 	case float32:
 		t := v.(float32)
 		return strconv.FormatFloat(float64(t), 'E', -1, 32)
