@@ -74,6 +74,9 @@ func (jb *JSONObject) PutJSONArray(key string, value *JSONArray) *JSONObject {
 func (jb *JSONObject) GetString(key string) string {
 	v := jb.GetInterface(key)
 	switch v.(type) {
+	case json.Number:
+		t, _ := v.(json.Number)
+		return string(t)
 	case string:
 		t, _ := v.(string)
 		return t
