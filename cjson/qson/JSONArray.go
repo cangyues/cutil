@@ -85,12 +85,14 @@ func (js *JSONArray) GetRow() *JSONObject {
 	if i == nil {
 		return nil
 	}
-	v, e := i.Value.(*Json)
+	v, e := i.Value.(map[string]interface{})
 	if !e {
 		return nil
 	}
 	json := new(JSONObject)
-	json.data = v
+	json.data = &Json{
+		data: v,
+	}
 	return json
 }
 

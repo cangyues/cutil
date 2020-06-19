@@ -13,9 +13,3 @@ func main() {
 	fmt.Println(jxson.GetInt("sex"))
 
 }
-
-type TE struct {
-	id   int64
-	Name string
-	Age  int
-}
