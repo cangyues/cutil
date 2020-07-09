@@ -2,6 +2,8 @@ package chttp
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -17,54 +19,62 @@ const HtmlContentType string = "text/html"
 const postMethod string = "POST"
 const getMethod string = "GET"
 
-func Post(url string, body string) string {
+func Post(url string, body string) (string, error) {
 	client := &http.Client{Timeout: timeout}
 	resp, err := client.Post(url, DefaultContentType, bytes.NewBuffer([]byte(body)))
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		return "{}", err
 	}
 	return rspHttp(resp)
 }
 
-func Get(url string) string {
-	client := &http.Client{Timeout: 5 * time.Second}
+func Get(url string) (string, error) {
+	client := &http.Client{Timeout: timeout}
 	resp, err := client.Get(url)
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		return "{}", err
 	}
 	return rspHttp(resp)
 }
 
-func PostHeadBody(url string, body string, head map[string]string) string {
+func PostHeadBody(url string, body string, head map[string]string) (string, error) {
 	req, err := http.NewRequest(postMethod, url, bytes.NewBuffer([]byte(body)))
 	if err != nil {
-		panic(err)
-		return "{}"
+		fmt.Println(err.Error())
+		return "{}", err
 	}
 	resp, err := reqHttp(req, head)
 	return rspHttp(resp)
 }
 
-func PostHeadForm(url string, body map[string]string, head map[string]string) string {
+func PostHeadForm(url string, body map[string]string, head map[string]string) (string, error) {
 	req, err := http.NewRequest(postMethod, url, nil)
 	if err != nil {
-		panic(err)
-		return "{}"
+		fmt.Println(err.Error())
+		return "{}", err
 	}
 	for k, v := range body {
 		req.PostForm.Set(k, v)
 	}
-	resp, err := reqHttp(req, head)
+	resp, e := reqHttp(req, head)
+	if e != nil {
+		return "{}", e
+	}
 	return rspHttp(resp)
 }
 
-func GetHead(url string, head map[string]string) string {
+func GetHead(url string, head map[string]string) (string, error) {
 	req, err := http.NewRequest(getMethod, url, nil)
 	if err != nil {
-		panic(err)
-		return "{}"
+		fmt.Println(err.Error())
+		return "{}", err
 	}
-	resp, err := reqHttp(req, head)
+	resp, e := reqHttp(req, head)
+	if e != nil {
+		return "{}", e
+	}
 	return rspHttp(resp)
 }
 
@@ -76,8 +86,11 @@ func reqHttp(req *http.Request, head map[string]string) (*http.Response, error) 
 	return (&http.Client{}).Do(req)
 }
 
-func rspHttp(rsp *http.Response) string {
+func rspHttp(rsp *http.Response) (string, error) {
+	if rsp == nil {
+		return "", errors.New("响应错误!")
+	}
 	defer rsp.Body.Close()
-	result, _ := ioutil.ReadAll(rsp.Body)
-	return string(result)
+	result, err := ioutil.ReadAll(rsp.Body)
+	return string(result), err
 }

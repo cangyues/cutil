@@ -1,15 +1,11 @@
 package main
 
-import (
-	"cjson/qson"
-	"fmt"
-)
+import "fmt"
 
 func main() {
-
-	jxson := qson.NewJSONObject()
-
-	jxson.PutString("sex", "20")
-	fmt.Println(jxson.GetInt("sex"))
-
+	m := 10000.00
+	for i := 0; i < 120; i++ {
+		m = m + (m * 0.04)
+	}
+	fmt.Println(m)
 }
