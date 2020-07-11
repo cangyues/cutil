@@ -5,7 +5,6 @@ import (
 )
 
 var (
-	td     time.Time         = time.Now()
 	ymd    string            = "2006-01-02"
 	ymdhms string            = "2006-01-02 15:04:05"
 	month  map[string]string = map[string]string{
@@ -26,35 +25,35 @@ var (
 
 //获取当前年
 func GetYear() int {
-	return td.Year()
+	return time.Now().Year()
 }
 
 //获取当前日
 func GetDay() int {
-	return td.Day()
+	return time.Now().Day()
 }
 
 //获取当前月份
 func GetMonth() string {
-	return month[td.Month().String()]
+	return month[time.Now().Month().String()]
 }
 
 //获取年月日时分秒
 func GetYMDHMS() string {
-	return td.Format(ymdhms)
+	return time.Now().Format(ymdhms)
 }
 
 //获取年月日
 func GetYMD() string {
-	return td.Format(ymd)
+	return time.Now().Format(ymd)
 }
 
 //获取时间戳
 func GetUnix() int64 {
-	return td.Unix()
+	return time.Now().Unix()
 }
 
-//日期加减（day +1后一天   -1后一天）
+//日期加减（day +1后一天   -1前一天）
 func GetDayPlus(day time.Duration) string {
 	return DayOpt(day, "24h")
 }
