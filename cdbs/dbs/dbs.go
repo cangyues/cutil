@@ -2,9 +2,9 @@ package dbs
 
 import (
 	"bytes"
-	json "cjson/qson"
 	"database/sql"
 	"fmt"
+	json "github.com/cangyues/cutil/cjson/qson"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"strconv"
