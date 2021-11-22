@@ -113,3 +113,7 @@ func (js *JSONArray) ToString() string {
 func (js *JSONArray) IsEmpty() bool {
 	return js.data.Len() == 0
 }
+
+func (js *JSONArray) Size() int{
+	return js.data.Len()
+}
